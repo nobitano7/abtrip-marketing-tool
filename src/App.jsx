@@ -17,14 +17,14 @@ export default function App() {
   const generated = useMemo(() => {
     if (!outline) return ''
     return [
-      `🎯 Dạng bài: ${mapType(contentType)}`,
+      '🎯 Dạng bài: ' + mapType(contentType),
       '',
       '#TravelWithABTRIP',
       '',
       '---',
       outline
         .split('\n')
-        .map((l, i) => `${i + 1}. ${l.trim()}`)
+        .map((l, i) => (l.trim() ? (i + 1) + '. ' + l.trim() : ''))
         .join('\n'),
     ].join('\n')
   }, [outline, contentType])
@@ -32,7 +32,7 @@ export default function App() {
   return (
     <div className="container">
       <header className="topbar">
-        <h1>ABTRIP Marketing Tool</h1>
+        <h1>ABTRIP Marketing Tool 🚀</h1>
         <p className="sub">Gen Z mode: on. Đẩy content lên net lẹ 💨</p>
       </header>
 
