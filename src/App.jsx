@@ -19,7 +19,7 @@ export default function App() {
     return [
       `🎯 Dạng bài: ${mapType(contentType)}`,
       '',
-      `#TravelWithABTRIP`,
+      '#TravelWithABTRIP',
       '',
       '---',
       outline
@@ -40,7 +40,7 @@ export default function App() {
         {tabs.map(t => (
           <button
             key={t.key}
-            className={\`tab \${active === t.key ? 'active' : ''}\`}
+            className={'tab ' + (active === t.key ? 'active' : '')}
             onClick={() => setActive(t.key)}
           >
             {t.label}
@@ -88,29 +88,61 @@ export default function App() {
             </div>
           </section>
         )}
+
         {active === 'research' && (
           <section className="card">
             <h2>Research & Outline</h2>
-            <p className="hint">Viết dàn ý bullet. Tool sẽ biến thành bài viết ở tab Generate.</p>
+            <p className="hint">Viết dàn ý bullet (mỗi dòng 1 ý). Tool sẽ biến thành bài viết ở tab Generate.</p>
             <textarea
               rows={12}
+              placeholder={`Ví dụ:
+Hook: Bay Trung - Thu vàng lộng lẫy
+Pain: săn vé mệt — giá nhảy
+Value: giá tốt, tư vấn tuyến tối ưu
+CTA: inbox ABTRIP…`}
               value={outline}
               onChange={e => setOutline(e.target.value)}
             />
+            <div className="row">
+              <button className="btn" onClick={() => setOutline(prev => prev || 'Hook...\nPain...\nValue...\nCTA...')}>
+                Gợi ý dàn ý nhanh
+              </button>
+            </div>
           </section>
         )}
+
         {active === 'generate' && (
           <section className="card">
             <h2>Generate</h2>
+            <p className="hint">Nội dung tạo từ dàn ý + gắn hashtag #TravelWithABTRIP</p>
             <textarea rows={14} readOnly value={generated} />
-            <button className="btn" onClick={() => { setResult(generated); setActive('output') }}>Đưa sang Output</button>
+            <div className="row">
+              <button className="btn" onClick={() => { setResult(generated); setActive('output') }}>
+                Đưa sang Output
+              </button>
+            </div>
           </section>
         )}
+
         {active === 'output' && (
           <section className="card">
             <h2>Output</h2>
-            <textarea rows={14} value={result} onChange={e => setResult(e.target.value)} />
-            <button className="btn" onClick={() => navigator.clipboard.writeText(result)}>Copy</button>
+            <textarea
+              rows={14}
+              value={result}
+              onChange={e => setResult(e.target.value)}
+            />
+            <div className="row wrap">
+              <button className="btn" onClick={() => navigator.clipboard.writeText(result)}>
+                Copy
+              </button>
+              <button className="btn" onClick={() => downloadText('abtrip-post.txt', result || generated)}>
+                Tải .txt
+              </button>
+              <button className="btn ghost" onClick={() => alert('Demo publish. Kết nối WordPress/Facebook/Zalo OA sau.')}>
+                Publish (demo)
+              </button>
+            </div>
           </section>
         )}
       </main>
@@ -128,4 +160,13 @@ function mapType(v) {
     viral: 'Bắt trend/viral',
     faq: 'Hỏi - đáp (FAQ)',
   }[v] || v
+}
+
+function downloadText(filename, text) {
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' })
+  const link = document.createElement('a')
+  link.href = URL.createObjectURL(blob)
+  link.download = filename
+  link.click()
+  URL.revokeObjectURL(link.href)
 }
